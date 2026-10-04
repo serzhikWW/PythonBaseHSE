@@ -16,7 +16,11 @@ def unique_advertisers(campaign_ids: list[str]) -> list[str]:
         -> ["ADV07", "ADV01", "ADV03"]
     """
     # TODO: ваш код здесь
-    ...
+    adverts = set()
+    for ad_cmpg in campaign_ids:
+        ad, _ = ad_cmpg.split("-")
+        adverts.add(ad)
+    return list(adverts)
 
 
 if __name__ == "__main__":

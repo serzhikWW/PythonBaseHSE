@@ -5,7 +5,8 @@
 Нужно понять, сколько их было, сколько уникальных и кто «наследил» больше
 всех.
 """
-
+from collections import Counter
+from collections import defaultdict
 
 def analyze_activity(user_ids: list[str]) -> tuple[dict[str, int], int, str]:
     """
@@ -24,7 +25,25 @@ def analyze_activity(user_ids: list[str]) -> tuple[dict[str, int], int, str]:
         analyze_activity(["a", "b", "a"]) -> ({"a": 2, "b": 1}, 2, "a")
     """
     # TODO: ваш код здесь
-    ...
+    users_count = defaultdict(int)
+    max_activity = 0
+    order = []
+
+    for u in user_ids:
+        users_count[u] += 1
+        order.append(u)
+
+        max_activity = max_activity if max_activity >= users_count[u] else users_count[u]
+
+    max_activity_user = ""
+
+    for u in order:
+        if users_count[u] == max_activity:
+            max_activity_user = u
+            break
+
+    return {u : c for u, c in users_count.items()}, len(users_count.keys()), max_activity_user
+
 
 
 if __name__ == "__main__":

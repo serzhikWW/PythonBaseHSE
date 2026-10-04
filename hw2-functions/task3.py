@@ -1,7 +1,8 @@
 """
 Задание 3. Объединение отчётов (*args) и лог предупреждений с тегами (**kwargs).
 """
-
+from task1 import calc_cpc, calc_ctr
+from operator import itemgetter
 
 def aggregate_campaigns(*reports: list[dict], sort_by: str = "ctr", reverse: bool = True) -> list[dict]:
     """
@@ -28,7 +29,19 @@ def aggregate_campaigns(*reports: list[dict], sort_by: str = "ctr", reverse: boo
         -> [{..., "campaign_id": "a", "ctr": 0.05, ...}, {..., "campaign_id": "b", "ctr": 0.03, ...}]
     """
     # TODO: ваш код здесь
-    ...
+    merged = []
+    for report in reports:
+        for camp in report:
+            new_dict = {
+                "campaign_id" : camp["campaign_id"],
+                "impressions" : camp["impressions"],
+                "clicks"      : camp["clicks"],
+                "spend"       : camp["spend"],
+                "ctr"         : calc_ctr(camp["clicks"], camp["impressions"]),
+                "cpc"         : calc_cpc(camp["spend"], camp["clicks"])
+            }
+            merged.append(new_dict)
+    return sorted(merged, key=itemgetter(sort_by), reverse=reverse)
 
 
 def log_alert(campaign_id: str, message: str, log: list[str] | None = None, **tags) -> list[str]:
@@ -53,7 +66,10 @@ def log_alert(campaign_id: str, message: str, log: list[str] | None = None, **ta
         -> ["c: spend spike [channel=email, severity=high]"]
     """
     # TODO: ваш код здесь
-    ...
+    new_log = [] if log is None else log
+    new_log.append(f"{campaign_id}: {message}")
+
+
 
 
 if __name__ == "__main__":

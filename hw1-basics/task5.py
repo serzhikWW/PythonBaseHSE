@@ -24,10 +24,18 @@ def remove_bots(user_ids: list[str], bots: set[str]) -> list[str]:
         remove_bots(["anna", "bot_1", "oleg"], {"bot_1"}) -> ["anna", "oleg"]
     """
     # Проходим по списку и удаляем ботов.
-    for user_id in user_ids:
-        if user_id in bots:
-            user_ids.remove(user_id)
-    return user_ids
+    # Во-первых, это работать не будет, потому что при удалении элемента из массива итератор
+    # начивнает указывать на следующий элемент в текущей итерации, индексы сдвигаются
+    # Во-вторых, текущая функция видоизменяет исходный список, а нам нужен новый
+
+    # ------------------------- Старый код -------------------
+    # for user_id in user_ids:
+    #     if user_id in bots:
+    #         user_ids.remove(user_id)
+    # return user_ids
+#     ------------------------- Новый код --------------------
+# В одну строчку, вообще красиво
+    return [item for item in user_ids if item not in bots]
 
 
 def last_events(log_text: str, n: int) -> list[str]:
@@ -43,12 +51,12 @@ def last_events(log_text: str, n: int) -> list[str]:
     """
     # Разбиваем текст на строки и отбрасываем пустые.
     lines = []
-    for line in log_text.split("/n"):
+    for line in log_text.split("\n"): #символ переноса на дургую строку не так написан
+        # а так норм вроде
         if line:
             lines.append(line)
     # Последние n строк - срез с конца.
     return lines[-n:]
-
 
 def unique_domains(emails: list[str]) -> int:
     """
@@ -62,7 +70,7 @@ def unique_domains(emails: list[str]) -> int:
     # Множество само уберёт повторы.
     domains = set()
     for email in emails:
-        domains.add(email.split("@")[0])
+        domains.add(email.split("@")[1]) #индекс не 0, а 1
     return len(domains)
 
 
@@ -79,7 +87,7 @@ def backoff_delays(first_delay: int, max_delay: int) -> list[int]:
     delays = []
     delay = first_delay
     # Удваиваем паузу, пока не дошли до максимума.
-    while delay < max_delay:
+    while delay <= max_delay: # условие подразумевает нестрогое неравенство
         delays.append(delay)
         delay = delay * 2
     return delays
@@ -89,6 +97,7 @@ if __name__ == "__main__":
     # Готовый код запуска - менять не нужно.
     users = ["anna", "bot_1", "bot_2", "oleg", "bot_3"]
     print(remove_bots(users, {"bot_1", "bot_2", "bot_3"}), "- ожидается ['anna', 'oleg']")
+    # print(users)
     print(last_events("10:00 login\n10:05 click\n\n10:07 export\n", 2), "- ожидается ['10:05 click', '10:07 export']")
     print(unique_domains(["anna@mail.ru", "oleg@mail.ru", "ivan@gmail.com"]), "- ожидается 2")
     print(backoff_delays(1, 8), "- ожидается [1, 2, 4, 8]")

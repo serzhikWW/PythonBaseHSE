@@ -29,7 +29,15 @@ def average_ctr(records: list[dict]) -> float:
         -> 0.1
     """
     # TODO: ваш код здесь
-    ...
+    clear_records = {}
+
+    for record in records:
+        ad_id, impressions, clicks = record.values()
+        # print(ad_id, impressions, clicks)
+        if not (impressions <= 0 or clicks < 0 or clicks > impressions):
+            clear_records[ad_id] = clicks / impressions
+
+    return sum(clear_records.values()) / len(clear_records) if len(clear_records) else 0.0
 
 
 if __name__ == "__main__":

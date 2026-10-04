@@ -5,7 +5,7 @@
 зашифрованное уже не Цезарем, а шифром Виженера: у каждой буквы свой сдвиг,
 который задаётся соответствующей буквой ключа.
 """
-
+ALPHABET = 26
 
 def decode_vigenere_cipher(text: str, key: str) -> str:
     """
@@ -26,7 +26,10 @@ def decode_vigenere_cipher(text: str, key: str) -> str:
     Пример: decode_vigenere_cipher("Rijvs, Uyvjn!", "key") -> "Hello, World!"
     """
     # TODO: ваш код здесь
-    ...
+    decoded = []
+    for char in text:
+        if char.isalpha():
+            char = chr(ord(char) )
 
 
 if __name__ == "__main__":

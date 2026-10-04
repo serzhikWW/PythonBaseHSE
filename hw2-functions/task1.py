@@ -21,7 +21,8 @@ def parse_campaign(line: str) -> dict:
         -> {"campaign_id": "ADV01-001", "impressions": 1000, "clicks": 50, "spend": 30.0}
     """
     # TODO: ваш код здесь
-    ...
+    cmp_id, impressions, clicks, spend = line.split(';')
+    return {"campaign_id" : cmp_id, "impressions" : int(impressions), "clicks" : int(clicks), "spend" : float(spend)}
 
 
 def calc_ctr(clicks: int, impressions: int) -> float:
@@ -36,7 +37,7 @@ def calc_ctr(clicks: int, impressions: int) -> float:
         calc_ctr(0, 0) -> 0.0
     """
     # TODO: ваш код здесь
-    ...
+    return 0.0 if impressions <= 0 else clicks / impressions
 
 
 def calc_cpc(spend: float, clicks: int) -> float:
@@ -50,7 +51,7 @@ def calc_cpc(spend: float, clicks: int) -> float:
         calc_cpc(75.0, 0) -> 0.0
     """
     # TODO: ваш код здесь
-    ...
+    return 0.0 if clicks <= 0 else spend / clicks
 
 
 def merge_duplicate_campaigns(records: list[dict]) -> list[dict]:
@@ -79,7 +80,23 @@ def merge_duplicate_campaigns(records: list[dict]) -> list[dict]:
         ]
     """
     # TODO: ваш код здесь
-    ...
+    merged_list = []
+    keys = set()
+
+    for record in records:
+        if record["campaign_id"] not in keys:
+            keys.update(record["campaign_id"])
+            merged_list.append(record)
+
+        else:
+            for iter in merged_list:
+                if iter["campaign_id"] == record["campaign_id"]:
+                    iter["impressions"] += record["impressions"]
+                    iter["clicks"] += record["clicks"]
+                    iter["spend"] += record["spend"]
+                    break
+
+    return merged_list
 
 
 def format_report(rows: list[dict]) -> str:
@@ -99,7 +116,12 @@ def format_report(rows: list[dict]) -> str:
         -> "a: CTR=5.00% CPC=0.60"
     """
     # TODO: ваш код здесь
-    ...
+    report = []
+
+    for row in rows:
+        report.append(f"{row["campaign_id"]}: CTR={calc_ctr(row["clicks"], row["impressions"]):.2%} "
+                      f"CPC={calc_cpc(row["spend"], row["clicks"]):.2f}")
+    return "\n".join(report)
 
 
 if __name__ == "__main__":
